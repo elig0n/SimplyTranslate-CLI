@@ -29,6 +29,7 @@ parser.add_argument("-f", "--from", default="auto", help="Language to translate 
 parser.add_argument("-t", "--to", required=True, help="Language to translate to")
 
 parser.add_argument("-d", "--debug", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle Debug Mode")
+parser.add_argument("-a", "--apikey", default=None, help="Optional Api-Key for LibreTranslate")
 
 args = vars(parser.parse_args())
 
@@ -42,6 +43,7 @@ engine_name = args["engine"]
 instance = args.get("instance")
 from_language = args["from"]
 to_language = args["to"]
+api_key = args.get("apikey")
 text = " ".join(args["text"])
 result = None
 
@@ -54,6 +56,7 @@ if debug:
     print(f"From     \"{from_language}\"")
     print(f"To       \"{to_language}\"")
     print(f"Text     \"{text}\"")
+    print(f"API Key  \"{api_key}\"")
 
 
 if online:
@@ -86,7 +89,11 @@ else:
         elif not (instance.startswith("https://") or instance.startswith("http://")):
             instance = f"https://{instance}"
 
-        engine = LibreTranslateEngine(instance)
+        
+        if api_key is None:
+            engine = LibreTranslateEngine(instance)
+        else:
+            engine = LibreTranslateEngine(instance, api_key=api_key)
     elif engine_name == "google":
         if instance is not None:
             parser.error("You can't set instance for Google Translate")
