@@ -71,7 +71,7 @@ if online:
 
     # Try contacting the server
     try:
-        return_value = requests.get(f"{instance}/api/{engine_name}/{from_language}/{to_language}/{text}")
+        return_value = requests.get(f"{instance}/api/translate?engine={engine_name}&from={from_language}&to={to_language}&text={text}")
 
         if return_value.status_code != 200:
             if debug:
