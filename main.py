@@ -33,7 +33,6 @@ args = vars(parser.parse_args())
 
 engine_name = args["engine"]
 instance = args.get("instance")
-engine = None
 
 if engine_name == "libre":
     if instance is None:
