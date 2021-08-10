@@ -5,6 +5,10 @@ from simplytranslate_engines.libretranslate import LibreTranslateEngine
 from simplytranslate_engines.googletranslate import GoogleTranslateEngine
 from simplytranslate_engines.utils import to_lang_code
 
+############################
+## Set up Argument Parser ##
+############################
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("text", metavar="TEXT", nargs="+", help="The text to translate")
@@ -22,6 +26,10 @@ parser.add_argument("-f", "--from", default="auto", help="Language to translate 
 parser.add_argument("-t", "--to", required=True, help="Language to translate to")
 
 args = vars(parser.parse_args())
+
+#######################
+## Reading Arguments ##
+#######################
 
 engine_name = args["engine"]
 instance = args.get("instance")
@@ -42,6 +50,10 @@ elif engine_name == "google":
 
 from_language = to_lang_code(args["from"], engine)
 to_language = to_lang_code(args["to"], engine)
+
+############
+## Output ##
+############
 
 print(
     engine.translate(
