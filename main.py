@@ -112,7 +112,7 @@ else:
 ## Output ##
 ############
 
-if result == None:
+if result is None:
     print("[ERR] Couldn't fetch any result. See Debug Mode for more info")
     sys.exit(1)
 else:
