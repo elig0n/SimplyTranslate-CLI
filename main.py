@@ -26,7 +26,7 @@ parser.add_argument("-i", "--instance", help="Instance URL to use (either for li
 parser.add_argument("-o", "--online", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle wether or not to use a SimplyTranslate instance running on a server")
 
 parser.add_argument("-f", "--from", default="auto", help="Language to translate from")
-parser.add_argument("-t", "--to", required=True, help="Language to translate to")
+parser.add_argument("-t", "--to", default="en", help="Language to translate to")
 
 parser.add_argument("-d", "--debug", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle Debug Mode")
 parser.add_argument("-a", "--apikey", default=None, help="Optional Api-Key for LibreTranslate")
