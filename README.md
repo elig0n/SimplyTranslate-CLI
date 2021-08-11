@@ -2,6 +2,38 @@
 
 This is a simple CLI for SimplyTranslate.
 
+## Usage Examples
+
+For the following examples we're always going to translate the german word "Krankenwagen", which means "ambulance" in english
+
+Translate using the default translation engine (google) locally to the default output language (english)
+```bash
+$ python3 main.py "Krankenwagen"
+ambulance
+```
+
+Translate using the libretranslate translation engine from german to french
+```bash
+$ python3 main.py --engine libre --from de -to fr "Krankenwagen"
+ambulance
+```
+
+Translate using the google engine online with the default SimplyTranslate instance (https://translate.metalune.xyz)
+
+```bash
+$ python3 main.py "Krankenwagen" --online
+ambulance
+```
+
+Translate using the google engine online and specify a custom SimplyTranslate instance
+```bash
+$ python3 main.py "Krankenwagen" --online --instance "translate.example.com"
+ambulance
+```
+
+
+
+
 ## Contact
 
 To get in contact with the developers, visit us on the #simple-web IRC channel on [Libera.Chat](https://libera.chat).
