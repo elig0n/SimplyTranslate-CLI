@@ -2,6 +2,7 @@
 import argparse
 import requests
 import sys
+from urllib.parse import urlencode
 
 from simplytranslate_engines.libretranslate import LibreTranslateEngine
 from simplytranslate_engines.googletranslate import GoogleTranslateEngine
@@ -71,17 +72,22 @@ if online:
 
     # Try contacting the server
     try:
-        return_value = requests.get(f"{instance}/api/translate?engine={engine_name}&from={from_language}&to={to_language}&text={text}")
+        params = {
+            "engine": engine_name,
+            "from": from_language,
+            "to": to_language,
+            "text": text
+        }
+
+        return_value = requests.get(f"{instance}/api/translate?{urlencode(params)}")
 
         if return_value.status_code != 200:
-            if debug:
-                print(f"[DBG] Status Code not Sucessful: {return_value.status_code}")
+            print(f"[ERR] Fetching Translation from server \"{instance}\" unsuccessful: Return Code {return_value.status_code}", file=sys.stderr)
         else:
             result = return_value.text
     except Exception as e:
-        if debug:
-            print(f"[DBG] Error sending request to instance \"{instance}\"")
-            print(e)
+        print(f"[ERR] Fetching Translation from server \"{instance}\" unsuccessful:", file=sys.stderr)
+        print(e, file=sys.stderr)
 else:
     if engine_name == "libre":
         if instance is None:
@@ -113,7 +119,7 @@ else:
 ############
 
 if result is None:
-    print("[ERR] Couldn't fetch any result. See Debug Mode for more info")
+    print("[ERR] Couldn't fetch any result. See Debug Mode for more info", file=sys.stderr)
     sys.exit(1)
 else:
     print(result)
