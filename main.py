@@ -23,14 +23,32 @@ parser.add_argument(
     default="google",
     help="Translation engine to use",
 )
-parser.add_argument("-i", "--instance", help="Instance URL to use (either for libre or server instance)")
-parser.add_argument("-o", "--online", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle wether or not to use a SimplyTranslate instance running on a server")
+parser.add_argument(
+    "-i", "--instance", help="Instance URL to use (either for libre or server instance)"
+)
+parser.add_argument(
+    "-o",
+    "--online",
+    default=False,
+    type=bool,
+    action=argparse.BooleanOptionalAction,
+    help="Toggle whether or not to use a SimplyTranslate instance running on a server",
+)
 
 parser.add_argument("-f", "--from", default="auto", help="Language to translate from")
 parser.add_argument("-t", "--to", default="en", help="Language to translate to")
 
-parser.add_argument("-d", "--debug", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle Debug Mode")
-parser.add_argument("-a", "--apikey", default=None, help="Optional Api-Key for LibreTranslate")
+parser.add_argument(
+    "-d",
+    "--debug",
+    default=False,
+    type=bool,
+    action=argparse.BooleanOptionalAction,
+    help="Toggle Debug Mode",
+)
+parser.add_argument(
+    "-a", "--apikey", default=None, help="Optional Api-Key for LibreTranslate"
+)
 
 args = vars(parser.parse_args())
 
@@ -51,18 +69,18 @@ result = None
 # In debug mode, print the value of all cli arguments
 if debug:
     print("[DBG] Command-Line Arguments:")
-    print(f"Online   \"{online}\"")
-    print(f"Engine   \"{engine_name}\"")
-    print(f"Instance \"{instance}")
-    print(f"From     \"{from_language}\"")
-    print(f"To       \"{to_language}\"")
-    print(f"Text     \"{text}\"")
-    print(f"API Key  \"{api_key}\"")
+    print(f"Online   {online}")
+    print(f'Engine   "{engine_name}"')
+    print(f'Instance "{instance}"')
+    print(f'From     "{from_language}"')
+    print(f'To       "{to_language}"')
+    print(f'Text     "{text}"')
+    print(f'API Key  "{api_key}"')
 
 
 if online:
     if instance is None:
-        #TODO: load this default instance from a configuration file
+        # TODO: load this default instance from a configuration file
         instance = "https://translate.metalune.xyz"
     elif not (instance.startswith("https://") or instance.startswith("http://")):
         instance = f"https://{instance}"
@@ -76,17 +94,23 @@ if online:
             "engine": engine_name,
             "from": from_language,
             "to": to_language,
-            "text": text
+            "text": text,
         }
 
         return_value = requests.get(f"{instance}/api/translate?{urlencode(params)}")
 
         if return_value.status_code != 200:
-            print(f"[ERR] Fetching Translation from server \"{instance}\" unsuccessful: Return Code {return_value.status_code}", file=sys.stderr)
+            print(
+                f'[ERR] Fetching Translation from server "{instance}" unsuccessful: Return Code {return_value.status_code}',
+                file=sys.stderr,
+            )
         else:
             result = return_value.text
     except Exception as e:
-        print(f"[ERR] Fetching Translation from server \"{instance}\" unsuccessful:", file=sys.stderr)
+        print(
+            f'[ERR] Fetching Translation from server "{instance}" unsuccessful:',
+            file=sys.stderr,
+        )
         print(e, file=sys.stderr)
 else:
     if engine_name == "libre":
@@ -95,7 +119,6 @@ else:
         elif not (instance.startswith("https://") or instance.startswith("http://")):
             instance = f"https://{instance}"
 
-        
         if api_key is None:
             engine = LibreTranslateEngine(instance)
         else:
@@ -106,20 +129,21 @@ else:
 
         engine = GoogleTranslateEngine()
 
-
     from_language = to_lang_code(from_language, engine)
     to_language = to_lang_code(to_language, engine)
 
     result = engine.translate(
-            text, from_language=from_language, to_language=to_language
-            )
+        text, from_language=from_language, to_language=to_language
+    )
 
 ############
 ## Output ##
 ############
 
 if result is None:
-    print("[ERR] Couldn't fetch any result. See Debug Mode for more info", file=sys.stderr)
+    print(
+        "[ERR] Couldn't fetch any result. See Debug Mode for more info", file=sys.stderr
+    )
     sys.exit(1)
 else:
     print(result)
