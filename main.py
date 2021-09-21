@@ -81,7 +81,7 @@ if debug:
 if online:
     if instance is None:
         # TODO: load this default instance from a configuration file
-        instance = "https://translate.metalune.xyz"
+        instance = "https://simplytranslate.org"
     elif not (instance.startswith("https://") or instance.startswith("http://")):
         instance = f"https://{instance}"
 
