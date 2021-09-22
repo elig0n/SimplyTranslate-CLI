@@ -37,6 +37,7 @@ parser.add_argument(
 
 parser.add_argument("-f", "--from", default="auto", help="Language to translate from")
 parser.add_argument("-t", "--to", default="en", help="Language to translate to")
+parser.add_argument("-p", "--print", default=False, type=bool, action=argparse.BooleanOptionalAction, help="Toggle wether or not to print a shareable link, only works if --online is provided.")
 
 parser.add_argument(
     "-d",
@@ -64,6 +65,7 @@ from_language = args["from"]
 to_language = args["to"]
 api_key = args.get("apikey")
 text = " ".join(args["text"])
+print_link = args.get("print")
 result = None
 
 # In debug mode, print the value of all cli arguments
@@ -77,6 +79,8 @@ if debug:
     print(f'Text     "{text}"')
     print(f'API Key  "{api_key}"')
 
+# Only used for the --print option
+link = ""
 
 if online:
     if instance is None:
@@ -96,6 +100,14 @@ if online:
             "to": to_language,
             "text": text,
         }
+
+        link_params = {
+            "engine": engine_name,
+            "sl": from_language,
+            "tl": to_language,
+            "text": text,
+        }
+        link = f"{instance}?{urlencode(link_params)}"
 
         return_value = requests.get(f"{instance}/api/translate?{urlencode(params)}")
 
@@ -147,3 +159,7 @@ if result is None:
     sys.exit(1)
 else:
     print(result)
+
+    if online and print_link:
+        print(link)
+
