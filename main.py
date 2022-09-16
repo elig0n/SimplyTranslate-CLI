@@ -8,6 +8,8 @@ from simplytranslate_engines.libretranslate import LibreTranslateEngine
 from simplytranslate_engines.googletranslate import GoogleTranslateEngine
 from simplytranslate_engines.utils import to_lang_code
 
+import asyncio
+
 ############################
 ## Set up Argument Parser ##
 ############################
@@ -141,12 +143,18 @@ else:
 
         engine = GoogleTranslateEngine()
 
-    from_language = to_lang_code(from_language, engine)
-    to_language = to_lang_code(to_language, engine)
+    loop = asyncio.new_event_loop()
 
-    result = engine.translate(
-        text, from_language=from_language, to_language=to_language
-    )
+    async def asyncio_to_lang_code(from_language, engine):
+        return await to_lang_code(from_language, engine)
+
+    async def asyncio_translate(text, from_language, to_language):
+        return await engine.translate(text, from_language=from_language, to_language=to_language)
+
+    from_language = loop.run_until_complete(asyncio_to_lang_code(from_language, engine))
+    to_language = loop.run_until_complete(asyncio_to_lang_code(from_language, engine))
+
+    result = loop.run_until_complete(asyncio_translate(text, from_language=from_language, to_language=to_language))
 
 ############
 ## Output ##
